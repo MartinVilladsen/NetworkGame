@@ -2,6 +2,10 @@ package game;
 
 import java.net.*;
 import java.io.*;
+
+import game.GameLogic;
+import game.Gui;
+import game.Player;
 import javafx.application.Application;;
 
 public class App {
