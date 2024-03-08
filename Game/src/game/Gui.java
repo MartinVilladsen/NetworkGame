@@ -1,8 +1,6 @@
 package game;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 
 import javafx.application.Application;
@@ -112,7 +110,9 @@ public class Gui extends Application {
 
 			//Modified version of the above code
 			socket = new Socket("localhost", 7000);
-			DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream());
+			//DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream());
+			ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
+
 
 			scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 				String keypress = "";
@@ -135,7 +135,10 @@ public class Gui extends Application {
 						break;
 				}
 				try {
-					outToServer.writeBytes(keypress + '\n');
+					//outToServer.writeBytes(keypress + '\n');
+					//Create packet and send it to server
+					Packet packet = new Packet(App.me, keypress);
+					outToServer.writeObject(packet);
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}
@@ -159,9 +162,6 @@ public class Gui extends Application {
 				e.printStackTrace();
 			}
 		}
-
-
-
 
 	public static void removePlayerOnScreen(pair oldpos) {
 		Platform.runLater(() -> {
@@ -202,8 +202,8 @@ public class Gui extends Application {
 			scoreList.setText(getScoreList());
 			});
 	}
-	public void playerMoved(int delta_x, int delta_y, String direction) {
-		GameLogic.updatePlayer(App.me,delta_x,delta_y,direction);
+	public void playerMoved(Player player, int delta_x, int delta_y, String direction) {
+		GameLogic.updatePlayer(player,delta_x,delta_y,direction);
 		updateScoreTable();
 	}
 	
@@ -221,12 +221,13 @@ public class Gui extends Application {
 			System.out.println("Thread created");
 			while (socket.isConnected()){
 				try {
-					BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-					switch (inFromServer.readLine()) {
-						case "up":    playerMoved(0,-1,"up");    break;
-						case "down":  playerMoved(0,+1,"down");  break;
-						case "left":  playerMoved(-1,0,"left");  break;
-						case "right": playerMoved(+1,0,"right"); break;
+					ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
+					Packet packet = (Packet) inFromServer.readObject();
+					switch (packet.getKeypress()) {
+						case "up":    playerMoved(packet.getPlayer(),0,-1,"up");    break;
+						case "down":  playerMoved(packet.getPlayer(),0,+1,"down");  break;
+						case "left":  playerMoved(packet.getPlayer(),-1,0,"left");  break;
+						case "right": playerMoved(packet.getPlayer(),+1,0,"right"); break;
 						default: break;
 					}
 				}catch (Exception e){

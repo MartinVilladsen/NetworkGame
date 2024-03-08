@@ -1,8 +1,6 @@
 package game;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -27,12 +25,12 @@ public class Server {
             e.printStackTrace();
         }
     }
-    private void sendToClients(String keypress){
+    private void sendToClients(Packet packet){
         try {
             clients.forEach(client -> {
                 try {
-                    DataOutputStream outToClient = new DataOutputStream(client.getOutputStream());
-                    outToClient.writeBytes(keypress + '\n');
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(client.getOutputStream());
+                    objectOutputStream.writeObject(packet);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -52,15 +50,16 @@ public class Server {
             while (socket.isConnected()) {
                 System.out.println("thread running");
                 try {
-                    BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    //BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
                     String Keypress = "";
 
                     while (socket.isConnected()) {
-                        Keypress = inFromClient.readLine();
-                        sendToClients(Keypress);
+                        Packet packet = (Packet) objectInputStream.readObject();
+                        sendToClients(packet);
                     }
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }
