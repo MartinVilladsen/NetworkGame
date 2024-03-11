@@ -137,14 +137,12 @@ public class Gui extends Application {
 				try {
 					//outToServer.writeBytes(keypress + '\n');
 					//Create packet and send it to server
-					Packet packet = new Packet(App.me, keypress);
+					Packet packet = new Packet(App. me, keypress);
 					outToServer.writeObject(packet);
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}
 			});
-
-
 
 
 			// Putting default players on screen

@@ -15,7 +15,7 @@ public class App {
 		System.out.println("Indtast spillernavn");
 		String navn = inFromUser.readLine();
 		me= GameLogic.makePlayer(navn);
-		GameLogic.makeVirtualPlayer(); // to be removed
+		//GameLogic.makeVirtualPlayer(); // to be removed
 		Application.launch(Gui.class);
 	}
 }

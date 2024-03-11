@@ -50,12 +50,15 @@ public class Server {
             while (socket.isConnected()) {
                 System.out.println("thread running");
                 try {
-                    //BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-                    String Keypress = "";
 
                     while (socket.isConnected()) {
                         Packet packet = (Packet) objectInputStream.readObject();
+                        //GameLogic here
+
+
+
+
                         sendToClients(packet);
                     }
                 } catch (Exception e) {
