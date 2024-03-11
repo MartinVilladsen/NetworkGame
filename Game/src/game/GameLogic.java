@@ -79,18 +79,20 @@ public static List<Player> players = new ArrayList<Player>();
               pair pa = getRandomFreePosition();
               p.setLocation(pa);
               pair oldpos = new pair(x+delta_x,y+delta_y);
-              Gui.movePlayerOnScreen(oldpos,pa,p.direction);
+			  p.setLastLocation(oldpos);
+              //Gui.movePlayerOnScreen(oldpos,pa,p.direction);
 			} else 
 				player.addPoints(1);
 			pair oldpos = player.getLocation();
+			player.setLastLocation(oldpos);
 			pair newpos = new pair(x+delta_x,y+delta_y); 
-			Gui.movePlayerOnScreen(oldpos,newpos,direction);
+			//Gui.movePlayerOnScreen(oldpos,newpos,direction);
 			player.setLocation(newpos);
 		}
 		
 		
 	}
-	
+
 	public static Player getPlayerAt(int x, int y) {
 		for (Player p : players) {
 			if (p.getXpos()==x && p.getYpos()==y) {
