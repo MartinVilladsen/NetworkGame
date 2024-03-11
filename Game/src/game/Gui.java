@@ -188,7 +188,7 @@ public class Gui extends Application {
 	
 	public static void movePlayerOnScreen(pair oldpos,pair newpos,String direction)
 	{
-		removePlayerOnScreen(oldpos);
+		if (!oldpos.equals(null)) removePlayerOnScreen(oldpos);
 		placePlayerOnScreen(newpos,direction);
 	}
 	
@@ -220,14 +220,19 @@ public class Gui extends Application {
 			while (socket.isConnected()){
 				try {
 					ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
-					Packet packet = (Packet) inFromServer.readObject();
-					switch (packet.getKeypress()) {
+					ServerPacket serverPacket = (ServerPacket) inFromServer.readObject();
+					/*switch (packet.getKeypress()) {
 						case "up":    playerMoved(packet.getPlayer(),0,-1,"up");    break;
 						case "down":  playerMoved(packet.getPlayer(),0,+1,"down");  break;
 						case "left":  playerMoved(packet.getPlayer(),-1,0,"left");  break;
 						case "right": playerMoved(packet.getPlayer(),+1,0,"right"); break;
 						default: break;
+					}*/
+					System.out.println(serverPacket.getPlayers().size());
+					for (Player p : serverPacket.getPlayers()) {
+						movePlayerOnScreen(p.getLastLocation(),p.getLocation(),p.getDirection());
 					}
+
 				}catch (Exception e){
 					System.out.println(e.getMessage());
 				}

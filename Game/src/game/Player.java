@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Player implements Serializable {
 	String name;
 	pair location;
+	pair lastLocation;
 	int point;
 	String direction;
 
@@ -62,5 +63,17 @@ public class Player implements Serializable {
 
 	public void setPoint(int point) {
 		this.point = point;
+	}
+
+	public String getPair() {
+		return location.x + " " + location.y;
+	}
+
+	public pair getLastLocation() {
+		return lastLocation;
+	}
+
+	public void setLastLocation(pair lastLocation) {
+		this.lastLocation = lastLocation;
 	}
 }

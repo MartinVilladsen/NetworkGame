@@ -25,12 +25,12 @@ public class Server {
             e.printStackTrace();
         }
     }
-    private void sendToClients(Packet packet){
+    private void sendToClients(ServerPacket serverPacket){
         try {
             clients.forEach(client -> {
                 try {
                     ObjectOutputStream objectOutputStream = new ObjectOutputStream(client.getOutputStream());
-                    objectOutputStream.writeObject(packet);
+                    objectOutputStream.writeObject(serverPacket);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -54,12 +54,20 @@ public class Server {
 
                     while (socket.isConnected()) {
                         Packet packet = (Packet) objectInputStream.readObject();
+                        Player player = packet.getPlayer();
+                        System.out.println("Player pair incoming: " + player.getPair());
                         //GameLogic here
+                        switch (packet.getKeypress()) {
+                            case "up":    GameLogic.updatePlayer(player,0,-1,"up");    break;
+                            case "down":  GameLogic.updatePlayer(player,0,+1,"down");  break;
+                            case "left":  GameLogic.updatePlayer(player,-1,0,"left");  break;
+                            case "right": GameLogic.updatePlayer(player,+1,0,"right"); break;
+                            default: break;
+                        }
+                        System.out.println("player old pair: " + player.lastLocation.x + " " + player.lastLocation.y);
+                        System.out.println("Player pair: " + player.getPair());
 
-
-
-
-                        sendToClients(packet);
+                        sendToClients(new ServerPacket(GameLogic.players));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
