@@ -109,7 +109,7 @@ public class Gui extends Application {
 			 */
 
 			//Modified version of the above code
-			socket = new Socket("localhost", 7000);
+			socket = new Socket("10.10.130.14", 7000);
 			//DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream());
 			ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
 

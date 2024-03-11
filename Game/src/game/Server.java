@@ -45,7 +45,7 @@ public class Server {
             this.socket = socket;
         }
         @Override
-        public void run() {
+        public synchronized void run() {
             System.out.println("Thread created");
             while (socket.isConnected()) {
                 System.out.println("thread running");
