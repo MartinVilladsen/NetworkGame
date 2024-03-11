@@ -2,6 +2,8 @@ package game;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -109,7 +111,7 @@ public class Gui extends Application {
 			 */
 
 			//Modified version of the above code
-			socket = new Socket("10.10.130.14", 7000);
+			socket = new Socket(App.ip, 7000);
 			//DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream());
 			ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
 
@@ -149,7 +151,7 @@ public class Gui extends Application {
 			for (int i = 0; i < GameLogic.players.size(); i++) {
 				fields[GameLogic.players.get(i).getXpos()][GameLogic.players.get(i).getYpos()].setGraphic(new ImageView(hero_up));
 			}
-			scoreList.setText(getScoreList());
+			scoreList.setText(getScoreList(GameLogic.players));
 
 
 			//Reciving the gamestate from the server
@@ -194,20 +196,20 @@ public class Gui extends Application {
 	
 
 	
-	public void updateScoreTable()
+	public void updateScoreTable(List<Player> players)
 	{
 		Platform.runLater(() -> {
-			scoreList.setText(getScoreList());
+			scoreList.setText(getScoreList(players));
 			});
 	}
 	public void playerMoved(Player player, int delta_x, int delta_y, String direction) {
 		GameLogic.updatePlayer(player,delta_x,delta_y,direction);
-		updateScoreTable();
+		updateScoreTable(GameLogic.players);
 	}
 	
-	public String getScoreList() {
+	public String getScoreList(List<Player> players) {
 		StringBuffer b = new StringBuffer(100);
-		for (Player p : GameLogic.players) {
+		for (Player p : players) {
 			b.append(p+"\r\n");
 		}
 		return b.toString();
@@ -231,7 +233,10 @@ public class Gui extends Application {
 					System.out.println(serverPacket.getPlayers().size());
 					for (Player p : serverPacket.getPlayers()) {
 						movePlayerOnScreen(p.getLastLocation(),p.getLocation(),p.getDirection());
+						updateScoreTable(serverPacket.getPlayers());
 					}
+
+
 
 				}catch (Exception e){
 					System.out.println(e.getMessage());

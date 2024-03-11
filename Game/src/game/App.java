@@ -10,8 +10,11 @@ import javafx.application.Application;;
 
 public class App {
 	public static Player me;
+	public static String ip;
 	public static void main(String[] args) throws Exception{	
 		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
+		System.out.println("Indtast IP: ");
+		ip = inFromUser.readLine();
 		System.out.println("Indtast spillernavn");
 		String navn = inFromUser.readLine();
 		me= GameLogic.makePlayer(navn);

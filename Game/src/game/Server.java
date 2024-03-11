@@ -68,6 +68,7 @@ public class Server {
                         System.out.println("Player pair: " + player.getPair());
 
                         sendToClients(new ServerPacket(GameLogic.players));
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
