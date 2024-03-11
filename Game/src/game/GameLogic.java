@@ -50,19 +50,30 @@ public static List<Player> players = new ArrayList<Player>();
 		return p;
 	}
 	
-	public static void updatePlayer(Player me, int delta_x, int delta_y, String direction)
-	{
-		me.direction = direction;
-		int x = me.getXpos(),y = me.getYpos();
+	public static void updatePlayer(Player player, int delta_x, int delta_y, String direction) {
+		//Adds the player if they are not in the list, consider making this a separate method
+		Boolean playerExists = false;
+		for (Player p : players) {
+			if (p.getName().equals(player.getName())) {
+				playerExists = true;
+				player = p;
+			}
+		}
+		if (!playerExists) {
+			players.add(player);
+		}
+
+		player.direction = direction;
+		int x = player.getXpos(),y = player.getYpos();
 
 		if (Generel.board[y+delta_y].charAt(x+delta_x)=='w') {
-			me.addPoints(-1);
+			player.addPoints(-1);
 		} 
 		else {
 			// collision detection
 			Player p = getPlayerAt(x+delta_x,y+delta_y);
 			if (p!=null) {
-              me.addPoints(10);
+              player.addPoints(10);
               //update the other player
               p.addPoints(-10);
               pair pa = getRandomFreePosition();
@@ -70,11 +81,11 @@ public static List<Player> players = new ArrayList<Player>();
               pair oldpos = new pair(x+delta_x,y+delta_y);
               Gui.movePlayerOnScreen(oldpos,pa,p.direction);
 			} else 
-				me.addPoints(1);
-			pair oldpos = me.getLocation();
+				player.addPoints(1);
+			pair oldpos = player.getLocation();
 			pair newpos = new pair(x+delta_x,y+delta_y); 
 			Gui.movePlayerOnScreen(oldpos,newpos,direction);
-			me.setLocation(newpos);
+			player.setLocation(newpos);
 		}
 		
 		
