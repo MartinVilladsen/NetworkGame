@@ -80,13 +80,11 @@ public static List<Player> players = new ArrayList<Player>();
               p.setLocation(pa);
               pair oldpos = new pair(x+delta_x,y+delta_y);
 			  p.setLastLocation(oldpos);
-              //Gui.movePlayerOnScreen(oldpos,pa,p.direction);
 			} else 
 				player.addPoints(1);
 			pair oldpos = player.getLocation();
 			player.setLastLocation(oldpos);
-			pair newpos = new pair(x+delta_x,y+delta_y); 
-			//Gui.movePlayerOnScreen(oldpos,newpos,direction);
+			pair newpos = new pair(x+delta_x,y+delta_y);
 			player.setLocation(newpos);
 		}
 		
@@ -101,8 +99,9 @@ public static List<Player> players = new ArrayList<Player>();
 		}
 		return null;
 	}
-	
-	
-	
+
+	public static void removePlayer(Player player) {
+		players.remove(player);
+	}
 
 }

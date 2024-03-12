@@ -94,26 +94,15 @@ public class Gui extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-			//This part needs to be split into two, one for handeling the input and one for reciving the output from the server.
-			/*
-			scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-				switch (event.getCode()) {
-				case UP:    playerMoved(0,-1,"up");    break;
-				case DOWN:  playerMoved(0,+1,"down");  break;
-				case LEFT:  playerMoved(-1,0,"left");  break;
-				case RIGHT: playerMoved(+1,0,"right"); break;
-				case ESCAPE:System.exit(0); 
-				default: break;
-				}
-			});
-			 */
-
-			//Modified version of the above code
-			socket = new Socket("10.10.130.14", 7000);
-			//DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream());
+			//Connecting to server
+			socket = new Socket("localhost", 7000);
 			ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
 
+			//Reciving the gamestate from the server
+			ReciverThread reciverThread = new ReciverThread();
+			reciverThread.start();
 
+			//Taking a keypress and sending it to the server in a package
 			scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 				String keypress = "";
 				switch (event.getCode()) {
@@ -130,17 +119,22 @@ public class Gui extends Application {
 						keypress = "right";
 						break;
 					case ESCAPE:
-						System.exit(0);
+						keypress = "exit";
 					default:
 						break;
 				}
 				try {
-					//outToServer.writeBytes(keypress + '\n');
 					//Create packet and send it to server
 					Packet packet = new Packet(App. me, keypress);
 					outToServer.writeObject(packet);
+
+					if (keypress.equals("exit")) {
+						reciverThread.interrupt();
+						System.exit(0);
+					}
 				} catch (Exception e) {
-					System.out.println(e.getMessage());
+					System.out.println("Error in sending packet");
+					//System.out.println(e.getMessage());
 				}
 			});
 
@@ -152,9 +146,7 @@ public class Gui extends Application {
 			scoreList.setText(getScoreList());
 
 
-			//Reciving the gamestate from the server
-			ReciverThread reciverThread = new ReciverThread();
-			reciverThread.start();
+
 
 		} catch(Exception e){
 				e.printStackTrace();
@@ -216,27 +208,20 @@ public class Gui extends Application {
 	private class ReciverThread extends Thread{
 		@Override
 		public void run() {
-			System.out.println("Thread created");
 			while (socket.isConnected()){
 				try {
 					ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
 					ServerPacket serverPacket = (ServerPacket) inFromServer.readObject();
-					/*switch (packet.getKeypress()) {
-						case "up":    playerMoved(packet.getPlayer(),0,-1,"up");    break;
-						case "down":  playerMoved(packet.getPlayer(),0,+1,"down");  break;
-						case "left":  playerMoved(packet.getPlayer(),-1,0,"left");  break;
-						case "right": playerMoved(packet.getPlayer(),+1,0,"right"); break;
-						default: break;
-					}*/
-					System.out.println(serverPacket.getPlayers().size());
+
 					for (Player p : serverPacket.getPlayers()) {
 						movePlayerOnScreen(p.getLastLocation(),p.getLocation(),p.getDirection());
 					}
 
 				}catch (Exception e){
-					System.out.println(e.getMessage());
+					//Connection terminated -> do nothing
 				}
 			}
+			System.out.println("You have beeen disconnected from the server.");
 		}
 	}
 }

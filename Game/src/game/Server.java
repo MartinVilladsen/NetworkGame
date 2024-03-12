@@ -16,13 +16,12 @@ public class Server {
             while (true) {
                 Socket socket = serverSocket.accept();
                 server.clients.add(socket);
-                System.out.println(server.clients.size() + " clients connected");
                 ReciverThread reciverThread = server.new ReciverThread(socket);
                 reciverThread.start();
-                System.out.println("Client connected");
+                System.out.println("Client with from ip: " + socket.getInetAddress());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
     private void sendToClients(ServerPacket serverPacket){
@@ -41,22 +40,19 @@ public class Server {
     }
     private class ReciverThread extends Thread {
         private Socket socket;
+        private Player player;
+        private Packet packet;
         public ReciverThread(Socket socket) {
             this.socket = socket;
         }
         @Override
         public synchronized void run() {
-            System.out.println("Thread created");
-            while (socket.isConnected()) {
-                System.out.println("thread running");
                 try {
                     ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-
+                    System.out.println("Client connected");
                     while (socket.isConnected()) {
-                        Packet packet = (Packet) objectInputStream.readObject();
-                        Player player = packet.getPlayer();
-                        System.out.println("Player pair incoming: " + player.getPair());
-                        //GameLogic here
+                        packet = (Packet) objectInputStream.readObject();
+                        player = packet.getPlayer();
                         switch (packet.getKeypress()) {
                             case "up":    GameLogic.updatePlayer(player,0,-1,"up");    break;
                             case "down":  GameLogic.updatePlayer(player,0,+1,"down");  break;
@@ -64,15 +60,24 @@ public class Server {
                             case "right": GameLogic.updatePlayer(player,+1,0,"right"); break;
                             default: break;
                         }
-                        System.out.println("player old pair: " + player.lastLocation.x + " " + player.lastLocation.y);
-                        System.out.println("Player pair: " + player.getPair());
 
                         sendToClients(new ServerPacket(GameLogic.players));
+
+                        //Special case player exits game
+                        if (packet.getKeypress().equals("exit")) {
+                            System.out.println("Client with ip: " + socket.getInetAddress() + " disconnected");
+                            GameLogic.removePlayer(player);
+                            clients.remove(socket);
+                            objectInputStream.close();
+                            socket.close();
+                        }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    GameLogic.removePlayer(player);
+                    clients.remove(socket);
+                    System.out.println(e.getMessage());
                 }
             }
         }
     }
-}
+
