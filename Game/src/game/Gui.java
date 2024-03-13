@@ -220,9 +220,8 @@ public class Gui extends Application {
 						} else {
 							removePlayerOnScreen(p.location);
 						}
-						updateScoreTable(serverPacket.getPlayers());
 					}
-
+					updateScoreTable(serverPacket.getPlayers());
 				}catch (Exception e){
 					//Connection terminated -> do nothing
 				}

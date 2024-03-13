@@ -65,7 +65,7 @@ public class Server {
                         sendToClients(new ServerPacket(GameLogic.players));
 
                         //Special case player exits game
-                        if (packet.getKeypress().equals("exit")) {
+                        if (!player.isConnected) {
                             System.out.println("Client with ip: " + socket.getInetAddress() + " disconnected");
                             GameLogic.removePlayer(player);
                             clients.remove(socket);
