@@ -15,7 +15,8 @@ public class App {
 	public static void main(String[] args) throws Exception{	
 		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("Indtast IP: ");
-		ip = inFromUser.readLine();
+		//ip = inFromUser.readLine();
+		ip = "localhost";
 		System.out.println("Indtast spillernavn");
 		name = inFromUser.readLine();
 		//me= GameLogic.makePlayer(navn);
