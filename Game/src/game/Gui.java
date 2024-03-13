@@ -182,7 +182,7 @@ public class Gui extends Application {
 	
 	public static void movePlayerOnScreen(pair oldpos,pair newpos,String direction)
 	{
-		if (!oldpos.equals(null)) removePlayerOnScreen(oldpos);
+		removePlayerOnScreen(oldpos);
 		placePlayerOnScreen(newpos,direction);
 	}
 	

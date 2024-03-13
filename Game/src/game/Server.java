@@ -13,7 +13,7 @@ public class Server {
         try {
             ServerSocket serverSocket = new ServerSocket(7000);
             System.out.println("Server is running");
-            while (true) {
+            while (server.clients.size() < 4) {
                 Socket socket = serverSocket.accept();
                 server.clients.add(socket);
                 ReciverThread reciverThread = server.new ReciverThread(socket);
@@ -49,7 +49,6 @@ public class Server {
         public synchronized void run() {
                 try {
                     ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-                    System.out.println("Client connected");
                     while (socket.isConnected()) {
                         packet = (Packet) objectInputStream.readObject();
                         player = packet.getPlayer();
