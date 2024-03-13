@@ -137,8 +137,7 @@ public class Gui extends Application {
 						System.exit(0);
 					}
 				} catch (Exception e) {
-					System.out.println("Error in sending packet");
-					//System.out.println(e.getMessage());
+					System.out.println(e.getMessage());
 				}
 			});
 
@@ -203,7 +202,7 @@ public class Gui extends Application {
 	public String getScoreList(List<Player> players) {
 		StringBuffer b = new StringBuffer(100);
 		for (Player p : players) {
-			b.append(p+"\r\n");
+			if (p.isConnected) b.append(p+"\r\n");
 		}
 		return b.toString();
 	}

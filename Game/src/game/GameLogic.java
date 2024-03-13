@@ -107,5 +107,11 @@ public static List<Player> players = new ArrayList<Player>();
 			}
 		}
 	}
-
+	public static void disablePlayer(Player player) {
+		for (Player p : players){
+			if (player.getName().equals(p.getName())) {
+				p.isConnected = false;
+			}
+		}
+	}
 }

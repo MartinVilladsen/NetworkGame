@@ -63,7 +63,7 @@ public class Server {
                             case "down":  GameLogic.updatePlayer(player,0,+1,"down");  break;
                             case "left":  GameLogic.updatePlayer(player,-1,0,"left");  break;
                             case "right": GameLogic.updatePlayer(player,+1,0,"right"); break;
-                            case "exit":  player.isConnected = false; break;
+                            case "exit":  GameLogic.disablePlayer(player); break;
                             default: break;
                         }
                         sendToClients(new ServerPacket(GameLogic.players));

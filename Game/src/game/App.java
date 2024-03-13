@@ -24,4 +24,3 @@ public class App {
 		Application.launch(Gui.class);
 	}
 }
-;
