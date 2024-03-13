@@ -18,7 +18,7 @@ public class Server {
                 server.clients.add(socket);
                 ReciverThread reciverThread = server.new ReciverThread(socket);
                 reciverThread.start();
-                System.out.println("Client with from ip: " + socket.getInetAddress());
+                System.out.println("Client with ip: " + socket.getInetAddress() + " connected");
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -58,6 +58,7 @@ public class Server {
                             case "down":  GameLogic.updatePlayer(player,0,+1,"down");  break;
                             case "left":  GameLogic.updatePlayer(player,-1,0,"left");  break;
                             case "right": GameLogic.updatePlayer(player,+1,0,"right"); break;
+                            case "exit":  player.isConnected = false; break;
                             default: break;
                         }
 

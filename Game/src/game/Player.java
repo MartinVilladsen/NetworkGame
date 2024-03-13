@@ -8,6 +8,7 @@ public class Player implements Serializable {
 	pair lastLocation;
 	int point;
 	String direction;
+	boolean isConnected = true;
 
 	public Player(String name, pair loc, String direction) {
 		this.name = name;

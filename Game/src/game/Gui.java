@@ -149,7 +149,6 @@ public class Gui extends Application {
 
 
 
-
 		} catch(Exception e){
 				e.printStackTrace();
 			}
@@ -216,11 +215,13 @@ public class Gui extends Application {
 					ServerPacket serverPacket = (ServerPacket) inFromServer.readObject();
 
 					for (Player p : serverPacket.getPlayers()) {
-						movePlayerOnScreen(p.getLastLocation(),p.getLocation(),p.getDirection());
+						if (p.isConnected) {
+							movePlayerOnScreen(p.getLastLocation(),p.getLocation(),p.getDirection());
+						} else {
+							removePlayerOnScreen(p.location);
+						}
 						updateScoreTable(serverPacket.getPlayers());
 					}
-
-
 
 				}catch (Exception e){
 					//Connection terminated -> do nothing
