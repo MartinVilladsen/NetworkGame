@@ -53,6 +53,11 @@ public class Server {
                     while (socket.isConnected()) {
                         packet = (Packet) objectInputStream.readObject();
                         player = packet.getPlayer();
+
+                        if (player == null) {
+                            player = GameLogic.makePlayer(packet.getKeypress());
+                        }
+
                         switch (packet.getKeypress()) {
                             case "up":    GameLogic.updatePlayer(player,0,-1,"up");    break;
                             case "down":  GameLogic.updatePlayer(player,0,+1,"down");  break;

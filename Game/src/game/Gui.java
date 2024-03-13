@@ -99,6 +99,8 @@ public class Gui extends Application {
 			//Connecting to server
 			socket = new Socket("localhost", 7000);
 			ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
+			Packet firstPacket = new Packet(App.me, App.name);
+			outToServer.writeObject(firstPacket);
 
 			//Reciving the gamestate from the server
 			ReciverThread reciverThread = new ReciverThread();
@@ -213,6 +215,13 @@ public class Gui extends Application {
 				try {
 					ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
 					ServerPacket serverPacket = (ServerPacket) inFromServer.readObject();
+
+					if (App.me == null) {
+						System.out.println(serverPacket.getPlayers().size());
+						for (Player p : serverPacket.getPlayers()) {
+							if (p.name.equals(App.name)) App.me = p;
+						}
+					}
 
 					for (Player p : serverPacket.getPlayers()) {
 						if (p.isConnected) {
