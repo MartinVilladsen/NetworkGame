@@ -216,7 +216,6 @@ public class Gui extends Application {
 					ServerPacket serverPacket = (ServerPacket) inFromServer.readObject();
 
 					if (App.me == null) {
-						System.out.println(serverPacket.getPlayers().size());
 						for (Player p : serverPacket.getPlayers()) {
 							if (p.name.equals(App.name)) App.me = p;
 						}
