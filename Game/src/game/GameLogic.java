@@ -67,7 +67,7 @@ public static List<Player> players = new ArrayList<Player>();
 		int x = player.getXpos(),y = player.getYpos();
 
 		if (Generel.board[y+delta_y].charAt(x+delta_x)=='w') {
-			player.addPoints(-1);
+			if (players.size() > 1) player.addPoints(-1);
 		} 
 		else {
 			// collision detection
@@ -80,8 +80,8 @@ public static List<Player> players = new ArrayList<Player>();
               p.setLocation(pa);
               pair oldpos = new pair(x+delta_x,y+delta_y);
 			  p.setLastLocation(oldpos);
-			} else 
-				player.addPoints(1);
+			} else
+			if (players.size() > 1) player.addPoints(1);
 			pair oldpos = player.getLocation();
 			player.setLastLocation(oldpos);
 			pair newpos = new pair(x+delta_x,y+delta_y);

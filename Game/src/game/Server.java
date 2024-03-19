@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
-    public List<Socket> clients = new ArrayList<>();
+    public static List<Socket> clients = new ArrayList<>();
     public static void main(String[] args) {
         Server server = new Server();
         try {
             ServerSocket serverSocket = new ServerSocket(7000);
             System.out.println("Server is running");
-            while (server.clients.size() < 4) {
+            while (clients.size() < 2) {
                 Socket socket = serverSocket.accept();
                 server.clients.add(socket);
                 ReciverThread reciverThread = server.new ReciverThread(socket);
@@ -54,7 +54,7 @@ public class Server {
                         player = packet.getPlayer();
 
                         if (player == null) {
-                            player = GameLogic.makePlayer(packet.getKeypress());
+                            player = GameLogic.makePlayer(packet.getKeypress()); //Key press contains the name of the player in the first packet
                         }
 
                         switch (packet.getKeypress()) {
@@ -69,8 +69,8 @@ public class Server {
 
                         //Special case player exits game
                         if (!player.isConnected){
-                            GameLogic.removePlayer(player);
                             System.out.println("Client with ip: " + socket.getInetAddress() + " disconnected");
+                            GameLogic.removePlayer(player);
                             clients.remove(socket);
                             objectInputStream.close();
                             socket.close();
