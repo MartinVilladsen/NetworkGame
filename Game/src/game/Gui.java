@@ -132,7 +132,7 @@ public class Gui extends Application {
 					Packet packet = new Packet(App. me, keypress);
 					outToServer.writeObject(packet);
 
-
+					//Exit the game after notifying the server
 					if (keypress.equals("exit")) {
 						reciverThread.interrupt();
 						System.exit(0);
@@ -216,12 +216,13 @@ public class Gui extends Application {
 					ObjectInputStream inFromServer = new ObjectInputStream(socket.getInputStream());
 					ServerPacket serverPacket = (ServerPacket) inFromServer.readObject();
 
+					//Intialize App.me after reciving the first serverpacket
 					if (App.me == null) {
 						for (Player p : serverPacket.getPlayers()) {
 							if (p.name.equals(App.name)) App.me = p;
 						}
 					}
-
+					//Update the players on the screen
 					for (Player p : serverPacket.getPlayers()) {
 						if (p.isConnected) {
 							movePlayerOnScreen(p.getLastLocation(),p.getLocation(),p.getDirection());
