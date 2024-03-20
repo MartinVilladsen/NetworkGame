@@ -13,7 +13,7 @@ public class Server {
         try {
             ServerSocket serverSocket = new ServerSocket(7000);
             System.out.println("Server is running");
-            while (clients.size() < 2) {
+            while (true) {
                 Socket socket = serverSocket.accept();
                 server.clients.add(socket);
                 ReciverThread reciverThread = server.new ReciverThread(socket);
@@ -83,6 +83,7 @@ public class Server {
                     GameLogic.removePlayer(player);
                     clients.remove(socket);
                     System.out.println("Client with ip: " + socket.getInetAddress() + " disconnected");
+                    System.out.println("Number of clients: " + clients.size());
                 }
             }
         }
