@@ -13,12 +13,13 @@ public class Server {
         try {
             ServerSocket serverSocket = new ServerSocket(7000);
             System.out.println("Server is running");
-            while (clients.size() < 2) {
+            while (true) {
                 Socket socket = serverSocket.accept();
                 server.clients.add(socket);
                 ReciverThread reciverThread = server.new ReciverThread(socket);
                 reciverThread.start();
                 System.out.println("Client with ip: " + socket.getInetAddress() + " connected");
+                System.out.println("Number of clients: " + server.clients.size());
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -62,14 +63,14 @@ public class Server {
                             case "down":  GameLogic.updatePlayer(player,0,+1,"down");  break;
                             case "left":  GameLogic.updatePlayer(player,-1,0,"left");  break;
                             case "right": GameLogic.updatePlayer(player,+1,0,"right"); break;
-                            case "exit":  GameLogic.disablePlayer(player); break;
+                            case "exit":  GameLogic.disablePlayer(player); player.isConnected = false; break; //Both are nessesary to remove the player.
                             default: break;
                         }
+
                         sendToClients(new ServerPacket(GameLogic.players));
 
                         //Special case player exits game
                         if (!player.isConnected){
-                            System.out.println("Client with ip: " + socket.getInetAddress() + " disconnected");
                             GameLogic.removePlayer(player);
                             clients.remove(socket);
                             objectInputStream.close();
@@ -77,9 +78,10 @@ public class Server {
                         }
                     }
                 } catch (Exception e) {
+                    System.out.println(e.getMessage());
                     GameLogic.removePlayer(player);
                     clients.remove(socket);
-                    System.out.println(e.getMessage());
+                    System.out.println("Client with ip: " + socket.getInetAddress() + " disconnected");
                 }
             }
         }

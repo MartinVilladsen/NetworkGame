@@ -132,6 +132,7 @@ public class Gui extends Application {
 					Packet packet = new Packet(App. me, keypress);
 					outToServer.writeObject(packet);
 
+
 					if (keypress.equals("exit")) {
 						reciverThread.interrupt();
 						System.exit(0);
