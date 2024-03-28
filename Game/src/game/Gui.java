@@ -3,6 +3,7 @@ package game;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javafx.application.Application;
@@ -31,6 +32,7 @@ public class Gui extends Application {
 	private static Label[][] fields;
 	private TextArea scoreList;
 
+	private static List<pair> oldPositions = new LinkedList<>();
 	//Connection to server
 	
 	// -------------------------------------------
@@ -207,6 +209,14 @@ public class Gui extends Application {
 		}
 		return b.toString();
 	}
+	//Overwrites the old player possion with a floor image
+	public static void clearOldPositions() {
+		if (oldPositions.isEmpty()) return;
+		for (pair oldpos : oldPositions) {
+			removePlayerOnScreen(oldpos);
+		}
+		oldPositions.clear();
+	}
 
 	private class ReciverThread extends Thread{
 		@Override
@@ -223,14 +233,13 @@ public class Gui extends Application {
 						}
 					}
 					//Update the players on the screen
+					clearOldPositions();
 					for (Player p : serverPacket.getPlayers()) {
-						if (p.isConnected) {
-							movePlayerOnScreen(p.getLastLocation(),p.getLocation(),p.getDirection());
-						} else {
-							removePlayerOnScreen(p.location);
-						}
+						placePlayerOnScreen(p.getLocation(),p.getDirection());
+						oldPositions.add(p.getLocation());
 					}
 					updateScoreTable(serverPacket.getPlayers());
+
 				}catch (Exception e){
 					//Connection terminated -> do nothing
 				}
