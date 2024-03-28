@@ -205,7 +205,7 @@ public class Gui extends Application {
 	public String getScoreList(List<Player> players) {
 		StringBuffer b = new StringBuffer(100);
 		for (Player p : players) {
-			if (p.isConnected) b.append(p+"\r\n");
+			b.append(p+"\r\n");
 		}
 		return b.toString();
 	}

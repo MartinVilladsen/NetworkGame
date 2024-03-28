@@ -63,15 +63,14 @@ public class Server {
                             case "down":  GameLogic.updatePlayer(player,0,+1,"down");  break;
                             case "left":  GameLogic.updatePlayer(player,-1,0,"left");  break;
                             case "right": GameLogic.updatePlayer(player,+1,0,"right"); break;
-                            case "exit":  GameLogic.disablePlayer(player); player.isConnected = false; break; //Both are nessesary to remove the player.
+                            case "exit":  GameLogic.removePlayer(player); break;
                             default: break;
                         }
 
                         sendToClients(new ServerPacket(GameLogic.players));
 
                         //Special case player exits game
-                        if (!player.isConnected){
-                            GameLogic.removePlayer(player);
+                        if (player == null){
                             clients.remove(socket);
                             objectInputStream.close();
                             socket.close();
@@ -79,11 +78,10 @@ public class Server {
                     }
                 } catch (Exception e) {
                     //If a player disconnects we remove the player before terminating the thread
-                    //System.out.println(e.getMessage());
                     GameLogic.removePlayer(player);
                     clients.remove(socket);
-                    System.out.println("Client with ip: " + socket.getInetAddress() + " disconnected");
-                    System.out.println("Number of clients: " + clients.size());
+                    System.out.println("Thread terminated for ip: " + socket.getInetAddress());
+                    System.out.println(e.getMessage());
                 }
             }
         }

@@ -19,8 +19,6 @@ public class App {
 		ip = "localhost";
 		System.out.println("Indtast spillernavn");
 		name = inFromUser.readLine();
-		//me= GameLogic.makePlayer(navn);
-		//GameLogic.makeVirtualPlayer(); // to be removed
 		Application.launch(Gui.class);
 	}
 }
